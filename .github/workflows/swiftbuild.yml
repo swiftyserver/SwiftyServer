@@ -8,10 +8,15 @@ jobs:
         steps:
         - name: Checkout
           uses: actions/checkout@v1
-        - name: Install Swift
+        - name: List
+          run: ls
+        - name: Install Packages
+          run: sudo apt install build-essential libatomic1 -y
+        - name: Download Swift
+          run:  wget "https://swift.org/builds/swift-5.1.3-release/ubuntu1804/swift-5.1.3-RELEASE/swift-5.1.3-RELEASE-ubuntu18.04.tar.gz" -q
+        - name: Unpack Swift
           run: |
-           wget "https://swift.org/builds/swift-5.1.3-release/ubuntu1804/swift-5.1.3-RELEASE/swift-5.1.3-RELEASE-ubuntu18.04.tar.gz"
            tar -xzf swift-5.1.3-RELEASE-ubuntu18.04.tar.gz
            mv swift-5.1.3-RELEASE-ubuntu18.04/ swift/
-           apt install build-essential libatomic1 -y
-           ./swift/usr/bin/swift build -c release
+        - name: Build Project
+          run: ./swift/usr/bin/swift build -c release
