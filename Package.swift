@@ -4,8 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "serverTest",
-    dependencies: [
+	name: "serverTest",
+	platforms: [
+		.macOS(.v10_15)
+	],
+
+	dependencies: [
+//		.package(url: "https://github.com/vapor/mysql-nio", from: "1.0.0-beta")
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
     ],
@@ -14,6 +19,8 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "serverTest",
-            dependencies: [])
-    ]
+			dependencies: []
+		)
+	],
+	swiftLanguageVersions: [.v5]
 )

@@ -15,12 +15,10 @@ protocol Point {
 	var upstream: Upstream { get }
 
 	func perform(on enviroment: inout Enviroment) throws -> Output
+//	func performNew(on enviroment: inout Enviroment, callback: () -> Output) throws
 }
 
-extension Never: RequestEnviroment {
-
-
-}
+extension Never: RequestEnviroment { }
 
 extension Never: Point {
 	typealias Enviroment = Never
