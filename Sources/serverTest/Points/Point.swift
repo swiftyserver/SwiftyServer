@@ -12,7 +12,6 @@ protocol Point {
 	associatedtype Output = Void
 	associatedtype Enviroment: RequestEnviroment
 
-
 	var upstream: Upstream { get }
 
 	func perform(on enviroment: inout Enviroment) throws -> Output

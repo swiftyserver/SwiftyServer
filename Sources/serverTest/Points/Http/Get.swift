@@ -42,7 +42,7 @@ extension RequestEnviroment where Self: HTTPEnviroment {
 		return GetPoint(path: path)
 	}
 
-
+	@available(*, unavailable, message: "This feature is not yet enabled!")
 	static func get<O>(_ path: DynamicGetPath<O>, type: O.Type) -> DynamicGetPoint<O, Self> {
 		return DynamicGetPoint<O, Self>(path: path)
 	}

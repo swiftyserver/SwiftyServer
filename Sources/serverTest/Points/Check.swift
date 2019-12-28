@@ -9,6 +9,7 @@ import Foundation
 
 
 struct Check<In: Point>: Point {
+
 	typealias Enviroment = In.Enviroment
 
 	func perform(on request: inout Enviroment) throws -> In.Output {

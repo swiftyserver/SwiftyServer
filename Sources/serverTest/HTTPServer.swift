@@ -21,8 +21,20 @@ class Server {
 		
 	}
 	
-	func configure<E: RequestEnviroment>(enviroment: E.Type,/* @EnviromentBuilder<E> */ points: () -> ()) {
+	func configure<E: HTTPEnviroment>(enviroment: E.Type,/* @EnviromentBuilder<E> */ points: () -> ()) {
+		points()
+	}
+	
+//	var endPoints: [String: AnyPoint<E>] = [:]
+}
+
+class EnviromentRouter<E: HTTPEnviroment> {
+
+//	static var shared: EnviromentRouter = .init()
+
+	var routes: [String: AnyPoint<E>] = [:]
+
+	init() {
 
 	}
-
 }

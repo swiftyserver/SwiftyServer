@@ -9,8 +9,8 @@ import Foundation
 
 
 
-struct SavePost: SQLAction, Codable {
-	static var SQLString: SQLString<SavePost> = "INSERT INTO posts(name, views) VALUES (\(\SavePost.name), \(\SavePost.views))"
+struct SavePostQuery: SQLAction, Codable {
+	static var SQLString: SQLString<SavePostQuery> = "INSERT INTO posts(name, views) VALUES (\(\SavePostQuery.name), \(\SavePostQuery.views))"
 	
 	var name: String
 	var views: Int

@@ -23,9 +23,9 @@ class HTTPRequest {
 		self.headers = headers
 	}
 	
-	var path: String
-	var type: String
-	var body: Data?
-	var cookies: [String: String]
-	var headers: [String: String]
+	public private(set) var path: String
+	public private(set) var type: String
+	public private(set) var body: Data?
+	public private(set) var cookies: [String: String]
+	public private(set) var headers: [String: String]
 }

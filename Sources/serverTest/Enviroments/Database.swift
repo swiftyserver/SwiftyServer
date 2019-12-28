@@ -16,6 +16,5 @@ protocol DatabaseConnection {
 protocol DatabaseEnviroment: RequestEnviroment {
 	associatedtype Database: DatabaseConnection
 
-	var connection: Database { get }
-
+	static var connection: Database { get }
 }
