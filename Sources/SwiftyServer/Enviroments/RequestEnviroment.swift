@@ -8,7 +8,7 @@
 import Foundation
 
 
-protocol RequestEnviroment {
+public protocol RequestEnviroment {
 
 }
 

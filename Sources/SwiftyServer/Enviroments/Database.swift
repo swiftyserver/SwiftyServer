@@ -8,12 +8,12 @@
 import Foundation
 
 
-protocol DatabaseConnection {
+public protocol DatabaseConnection {
 	// General Database Connection Stuff!
 }
 
 
-protocol DatabaseEnviroment: RequestEnviroment {
+public protocol DatabaseEnviroment: RequestEnviroment {
 	associatedtype Database: DatabaseConnection
 
 	static var connection: Database { get }

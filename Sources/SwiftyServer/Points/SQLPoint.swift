@@ -8,11 +8,11 @@
 import Foundation
 
 
-struct SQLActionPoint<In: Point>: Point where In.Output: SQLAction, In.Enviroment: DatabaseEnviroment {
-	typealias Enviroment = In.Enviroment
+public struct SQLActionPoint<In: Point>: Point where In.Output: SQLAction, In.Enviroment: DatabaseEnviroment {
+	public typealias Enviroment = In.Enviroment
 
 
-	func perform(on request: inout Enviroment) throws -> In.Output {
+	public func perform(on request: inout Enviroment) throws -> In.Output {
 		let outPrev = try upstream.perform(on: &request)
 
 
@@ -22,15 +22,15 @@ struct SQLActionPoint<In: Point>: Point where In.Output: SQLAction, In.Enviromen
 	}
 
 
-	typealias Output = In.Output
-	var upstream: In
+	public typealias Output = In.Output
+	public var upstream: In
 }
 
 
-struct SQLViewPoint<In: Point>: Point where In.Output: SQLView, In.Enviroment: DatabaseEnviroment{
-	typealias Enviroment = In.Enviroment
+public struct SQLViewPoint<In: Point>: Point where In.Output: SQLView, In.Enviroment: DatabaseEnviroment{
+	public typealias Enviroment = In.Enviroment
 
-	func perform(on request: inout Enviroment) throws -> In.Output.Result {
+	public func perform(on request: inout Enviroment) throws -> In.Output.Result {
 
 		let outPrev = try upstream.perform(on: &request)
 
@@ -39,15 +39,15 @@ struct SQLViewPoint<In: Point>: Point where In.Output: SQLView, In.Enviroment: D
 		return try JSONDecoder().decode(In.Output.Result.self, from: Data())
 	}
 
-	var upstream: In
-	typealias Output = In.Output.Result
+	public var upstream: In
+	public typealias Output = In.Output.Result
 }
 
-struct SQLArrayViewPoint<In: Point, O>: Point where In: SQLView, In.Result == Array<O>, In.Enviroment: DatabaseEnviroment {
-	typealias Enviroment = In.Enviroment
+public struct SQLArrayViewPoint<In: Point, O>: Point where In: SQLView, In.Result == Array<O>, In.Enviroment: DatabaseEnviroment {
+	public typealias Enviroment = In.Enviroment
 
 
-	func perform(on request: inout Enviroment) throws -> In.Result {
+	public func perform(on request: inout Enviroment) throws -> In.Result {
 
 		let outPrev = try upstream.perform(on: &request)
 
@@ -56,19 +56,19 @@ struct SQLArrayViewPoint<In: Point, O>: Point where In: SQLView, In.Result == Ar
 		return try JSONDecoder().decode(In.Result.self, from: Data())
 	}
 
-	var upstream: In
-	typealias Output = In.Result
+	public var upstream: In
+	public typealias Output = In.Result
 }
 
 
-extension Point where Output: SQLAction, Enviroment: DatabaseEnviroment {
+public extension Point where Output: SQLAction, Enviroment: DatabaseEnviroment {
 	func query() -> SQLActionPoint<Self> {
 		return SQLActionPoint(upstream: self)
 	}
 }
 
 
-extension Point where Output: SQLView, Enviroment: DatabaseEnviroment {
+public extension Point where Output: SQLView, Enviroment: DatabaseEnviroment {
 	func getQuery() -> SQLViewPoint<Self> {
 		return SQLViewPoint(upstream: self)
 	}
@@ -79,7 +79,7 @@ extension Point where Output: SQLView, Enviroment: DatabaseEnviroment {
 }
 
 
-extension Point where Output: SQLView, Output.Result == Array<Any>, Enviroment: DatabaseEnviroment {
+public extension Point where Output: SQLView, Output.Result == Array<Any>, Enviroment: DatabaseEnviroment {
 	func get() -> SQLViewPoint<Self> {
 		return SQLViewPoint(upstream: self)
 	}

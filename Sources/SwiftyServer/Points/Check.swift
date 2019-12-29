@@ -8,11 +8,11 @@
 import Foundation
 
 
-struct Check<In: Point>: Point {
+public struct Check<In: Point>: Point {
 
-	typealias Enviroment = In.Enviroment
+	public typealias Enviroment = In.Enviroment
 
-	func perform(on request: inout Enviroment) throws -> In.Output {
+	public func perform(on request: inout Enviroment) throws -> In.Output {
 		let outPrev = try upstream.perform(on: &request)
 
 		if self.check(outPrev, request) {
@@ -26,9 +26,9 @@ struct Check<In: Point>: Point {
 		case notValid(message: String)
 	}
 
-	typealias Output = In.Output
+	public typealias Output = In.Output
 
-	var upstream: In
+	public var upstream: In
 	var check: (In.Output, Enviroment) -> Bool
 	var message: String
 
@@ -39,7 +39,7 @@ struct Check<In: Point>: Point {
 	}
 }
 
-extension Point {
+public extension Point {
 	func check(message: String, _ f: @escaping (Self.Output, Enviroment) -> Bool) -> Check<Self> {
 		return Check<Self>(upstream: self, check: f, message: message)
 	}

@@ -8,11 +8,11 @@
 import Foundation
 
 
-struct Assert<In: Point>: Point where In.Enviroment: ErrorHandlingEnviroment {
+public struct Assert<In: Point>: Point where In.Enviroment: ErrorHandlingEnviroment {
 
-	typealias Enviroment = In.Enviroment
+	public typealias Enviroment = In.Enviroment
 
-	func perform(on request: inout Enviroment) throws -> In.Output {
+	public func perform(on request: inout Enviroment) throws -> In.Output {
 		let outPrev = try upstream.perform(on: &request)
 
 		if self.check(outPrev, request) {
@@ -26,14 +26,14 @@ struct Assert<In: Point>: Point where In.Enviroment: ErrorHandlingEnviroment {
 		case notValid(message: String)
 	}
 
-	typealias Output = In.Output
+	public typealias Output = In.Output
 
-	var upstream: In
+	public var upstream: In
 	var check: (In.Output, Enviroment) -> Bool
 	var error: Enviroment.ErrorType
 }
 
-extension Point where Enviroment: ErrorHandlingEnviroment {
+public extension Point where Enviroment: ErrorHandlingEnviroment {
 	func assert(_ error: Enviroment.ErrorType, _ f: @escaping (Self.Output, Enviroment) -> Bool) -> Assert<Self> {
 		return Assert<Self>(upstream: self, check: f, error: error)
 	}

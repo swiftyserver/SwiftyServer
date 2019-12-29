@@ -8,19 +8,19 @@
 import Foundation
 
 
-struct AnyPoint<R: RequestEnviroment>: Point {
-	typealias Enviroment = R
+public struct AnyPoint<R: RequestEnviroment>: Point {
+	public typealias Enviroment = R
 
-	var upstream: Never {
+	public var upstream: Never {
 		fatalError()
 	}
 
-	typealias Output = Data
+	public typealias Output = Data
 
 	var fpoint: (inout Enviroment) throws -> Data
 
 
-	func perform(on request: inout Enviroment) throws -> Data {
+	public func perform(on request: inout Enviroment) throws -> Data {
 		return try fpoint(&request)
 	}
 
@@ -33,7 +33,7 @@ struct AnyPoint<R: RequestEnviroment>: Point {
 //	var point: (inout HTTPEnviroment) throws -> Data
 //}
 
-extension Point where Output == Data {
+public extension Point where Output == Data {
 	func eraseToAnyType() -> AnyPoint<Self.Enviroment> {
 		return AnyPoint(erase: self)
 	}

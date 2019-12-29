@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ErrorHandlingEnviroment: RequestEnviroment {
+public protocol ErrorHandlingEnviroment: RequestEnviroment {
 
 	associatedtype ErrorType: Error
 }

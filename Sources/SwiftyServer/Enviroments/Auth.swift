@@ -7,13 +7,13 @@
 
 import Foundation
 
-protocol Identifiable {
+public protocol Identifiable {
 	associatedtype Identifier
 
 	var id: Identifier { get }
 }
 
-protocol AuthEnviroment: DatabaseEnviroment {
+public protocol AuthEnviroment: DatabaseEnviroment {
 	associatedtype User: Identifiable
 	associatedtype Credential: Codable
 
@@ -23,10 +23,10 @@ protocol AuthEnviroment: DatabaseEnviroment {
 }
 
 
-struct AuthPoint<In: Point>: Point where In.Enviroment: AuthEnviroment {
-	typealias Enviroment = In.Enviroment
+public struct AuthPoint<In: Point>: Point where In.Enviroment: AuthEnviroment {
+	public typealias Enviroment = In.Enviroment
 
-	func perform(on request: inout Enviroment) throws -> In.Output {
+	public func perform(on request: inout Enviroment) throws -> In.Output {
 		let outPrev = try upstream.perform(on: &request)
 		if let credentials = request[keyPath: self.keyPath] {
 			request.currentUser = request.auth(with: credentials)
@@ -34,14 +34,14 @@ struct AuthPoint<In: Point>: Point where In.Enviroment: AuthEnviroment {
 		return outPrev
 	}
 
-	var upstream: In
+	public var upstream: In
 
 	var keyPath: KeyPath<Enviroment, Enviroment.Credential?>
 
-	typealias Output = In.Output
+	public typealias Output = In.Output
 }
 
-extension Point where Enviroment: AuthEnviroment {
+public extension Point where Enviroment: AuthEnviroment {
 	func auth(from: KeyPath<Enviroment, Enviroment.Credential?>) -> AuthPoint<Self> {
 		return AuthPoint(upstream: self, keyPath: from)
 	}

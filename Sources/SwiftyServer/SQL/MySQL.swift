@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct MySQLDatabase: DatabaseConnection {
-	var hostname: String
-	var database: String
+public struct MySQLDatabase: DatabaseConnection {
+	public var hostname: String
+	public var database: String
+
+	public init(hostname: String, database: String) {
+		self.hostname = hostname
+		self.database = database
+	}
 }

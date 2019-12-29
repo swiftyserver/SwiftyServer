@@ -10,7 +10,7 @@ import NIO
 import NIOHTTP1
 
 
-class Server<E: HTTPEnviroment> {
+public class Server<E: HTTPEnviroment> {
 
 	let group = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
 	let threadPool = NIOThreadPool(numberOfThreads: 6)
@@ -23,7 +23,7 @@ class Server<E: HTTPEnviroment> {
 	}
 
 
-	init(host: String = "0.0.0.0", port: Int = 8080) {
+	public init(host: String = "0.0.0.0", port: Int = 8080) {
 		threadPool.start()
 
 		let socketBootstrap = ServerBootstrap(group: group)
@@ -51,7 +51,7 @@ class Server<E: HTTPEnviroment> {
 		try! threadPool.syncShutdownGracefully()
 	}
 
-	func serve() {
+	public func serve() {
 		print(endPoints.routes)
 		
 		try! channel.closeFuture.wait()
@@ -59,10 +59,11 @@ class Server<E: HTTPEnviroment> {
 	}
 
 
-	func configure(_ points: () -> ()) {
+	public func configure(_ points: () -> ()) -> Self {
 		print("Start Endpoint Config")
 		points()
 		print("End Config!")
+		return self
 	}
 
 	var endPoints: EnviromentRouter<E> = .init()

@@ -8,13 +8,13 @@
 import Foundation
 
 
-protocol HTTPEnviroment: RequestEnviroment {
+public protocol HTTPEnviroment: RequestEnviroment {
 	var httpParameters: HTTPRequest { get }
 	static var Server: Server<Self> { get }
 	init(request: HTTPRequest)
 }
 
-class HTTPRequest {
+open class HTTPRequest {
 	internal init(path: String, type: String, body: Data?, cookies: [String : String], headers: [String : String]) {
 		self.path = path
 		self.type = type
@@ -30,7 +30,7 @@ class HTTPRequest {
 	public private(set) var headers: [String: String]
 }
 
-extension HTTPEnviroment {
+public extension HTTPEnviroment {
 	static func serve() {
 		Self.Server.serve()
 	}

@@ -9,12 +9,12 @@ import Foundation
 
 
 
-protocol AutoAuthEnviroment: AuthEnviroment {
+public protocol AutoAuthEnviroment: AuthEnviroment {
 	static var AuthPath: KeyPath<Self, Credential?> { get }
 }
 
 
-extension Point where Enviroment: AutoAuthEnviroment {
+public extension Point where Enviroment: AutoAuthEnviroment {
 	func auth() -> AuthPoint<Self> {
 		return AuthPoint(upstream: self, keyPath: Enviroment.AuthPath)
 	}

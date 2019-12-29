@@ -7,18 +7,18 @@
 
 import Foundation
 
-struct GetPoint<R: HTTPEnviroment>: Point {
-	typealias Enviroment = R
+public struct GetPoint<R: HTTPEnviroment>: Point {
+	public typealias Enviroment = R
 
-	func perform(on request: inout Enviroment) -> () {
+	public func perform(on request: inout Enviroment) -> () {
 		return ()
 	}
 
-	var upstream: Never {
+	public var upstream: Never {
 		fatalError()
 	}
 
-	var path: String
+	public var path: String
 
 	public init(path: String) {
 		R.Server.endPoints.add(path: path, method: "GET")
@@ -26,17 +26,17 @@ struct GetPoint<R: HTTPEnviroment>: Point {
 	}
 }
 
-struct DynamicGetPoint<P: Decodable, R: HTTPEnviroment>: Point {
-	typealias Enviroment = R
-	func perform(on request: inout Enviroment) throws  -> P {
+public struct DynamicGetPoint<P: Decodable, R: HTTPEnviroment>: Point {
+	public typealias Enviroment = R
+	public func perform(on request: inout Enviroment) throws  -> P {
 		return try JSONDecoder().decode(P.self, from: Data())
 	}
 
-	var upstream: Never {
+	public var upstream: Never {
 		fatalError()
 	}
 
-	typealias Output = P
+	public typealias Output = P
 
 	var path: DynamicGetPath<P>
 
@@ -46,7 +46,7 @@ struct DynamicGetPoint<P: Decodable, R: HTTPEnviroment>: Point {
 }
 
 
-extension RequestEnviroment where Self: HTTPEnviroment {
+public extension RequestEnviroment where Self: HTTPEnviroment {
 	static func get(_ path: String) -> GetPoint<Self> {
 		return GetPoint(path: path)
 	}

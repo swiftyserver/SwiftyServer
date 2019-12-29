@@ -6,10 +6,7 @@
 //
 
 import Foundation
-import NIO
-import NIOHTTP1
-
-print("Start!")
+import SwiftyServer
 
 struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 	static var Server: Server<MyEnviroment> = .init()
@@ -73,8 +70,4 @@ MyEnviroment.Server.configure {
 		.query()
 		.map { up, req in "Your post has been created!" }
 		.response()
-}
-
-MyEnviroment.serve()
-
-print("Configured!")
+}.serve()
