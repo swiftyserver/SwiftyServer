@@ -10,7 +10,7 @@ import Foundation
 
 protocol HTTPEnviroment: RequestEnviroment {
 	var httpParameters: HTTPRequest { get }
-
+	static var server: Server<Self> { get }
 	init(request: HTTPRequest)
 }
 

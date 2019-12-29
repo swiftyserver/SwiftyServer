@@ -19,6 +19,11 @@ struct GetPoint<R: HTTPEnviroment>: Point {
 	}
 
 	var path: String
+
+	public init(path: String) {
+		R.server.endPoints.add(path: path, method: "GET")
+		self.path = path
+	}
 }
 
 struct DynamicGetPoint<P: Decodable, R: HTTPEnviroment>: Point {
@@ -34,6 +39,10 @@ struct DynamicGetPoint<P: Decodable, R: HTTPEnviroment>: Point {
 	typealias Output = P
 
 	var path: DynamicGetPath<P>
+
+	public init(path: DynamicGetPath<P>) {
+		self.path = path
+	}
 }
 
 

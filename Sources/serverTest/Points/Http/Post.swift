@@ -22,6 +22,12 @@ struct PostPoint<O: Decodable, R: HTTPEnviroment>: Point {
 	typealias Output = O
 
 	var path: String
+
+	public init(path: String) {
+		R.server.endPoints.add(path: path, method: "POST")
+		R.server.endPoints.add(type: "\(O.Type.self)")
+		self.path = path
+	}
 }
 
 

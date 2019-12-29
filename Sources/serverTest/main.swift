@@ -6,10 +6,14 @@
 //
 
 import Foundation
+import NIO
+import NIOHTTP1
 
-
+print("Start!")
 
 struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
+	static var server: Server<MyEnviroment> = .init(host: "127.0.0.1")
+
 	init(request: HTTPRequest) { self.httpParameters = request }
 
 	static var AuthPath: KeyPath<MyEnviroment, String?> = \.httpParameters.cookies["auth"]
@@ -36,8 +40,7 @@ struct User: Identifiable {
 	var id: Int
 }
 
-Server.shared.configure(enviroment: MyEnviroment.self) {
-
+MyEnviroment.server.configure {
 	MyEnviroment.get("/hello")
 		.map { up, req in "Hello" }
 		.map { up, req in "\(up) World"}
@@ -68,3 +71,4 @@ Server.shared.configure(enviroment: MyEnviroment.self) {
 		.response()
 }
 
+print("Configured!")

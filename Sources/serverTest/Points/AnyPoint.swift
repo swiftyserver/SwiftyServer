@@ -29,9 +29,9 @@ struct AnyPoint<R: RequestEnviroment>: Point {
 	}
 }
 
-struct HTTPPoint {
-	var point: (inout HTTPEnviroment) throws -> Data
-}
+//struct HTTPPoint {
+//	var point: (inout HTTPEnviroment) throws -> Data
+//}
 
 extension Point where Output == Data {
 	func eraseToAnyType() -> AnyPoint<Self.Enviroment> {

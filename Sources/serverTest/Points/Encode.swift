@@ -23,13 +23,14 @@ struct Encode<In: Point>: Point where In.Output: Encodable {
 
 	var upstream: In
 	typealias Output = Data
-
 }
 
 
-extension Point where Output: Encodable {
+extension Point where Output: Encodable, Enviroment: HTTPEnviroment {
 	@discardableResult
 	func response() -> AnyPoint<Enviroment> {
-		return Encode(upstream: self).eraseToAnyType()
+		let p = Encode(upstream: self).eraseToAnyType()
+		Enviroment.server.endPoints.add(returns: "\(Output.self)", point: p)
+		return p
 	}
 }
