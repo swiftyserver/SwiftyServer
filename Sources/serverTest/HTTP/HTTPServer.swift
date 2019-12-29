@@ -18,12 +18,12 @@ class Server<E: HTTPEnviroment> {
 
 	static func childChannelInitializer(channel: Channel) -> EventLoopFuture<Void> {
 		return channel.pipeline.configureHTTPServerPipeline(withErrorHandling: true).flatMap {
-			channel.pipeline.addHandler(HTTPHandler())
+			channel.pipeline.addHandler(ServerHandler<E>())
 		}
 	}
 
 
-	init(host: String, port: Int = 8080) {
+	init(host: String = "0.0.0.0", port: Int = 8080) {
 		threadPool.start()
 
 		let socketBootstrap = ServerBootstrap(group: group)
@@ -41,7 +41,7 @@ class Server<E: HTTPEnviroment> {
 
 
 
-		self.channel = try! socketBootstrap.bind(host: "127.0.0.1", port: 8888).wait()
+		self.channel = try! socketBootstrap.bind(host: host, port: port).wait()
 	}
 
 	var channel: Channel
@@ -52,6 +52,8 @@ class Server<E: HTTPEnviroment> {
 	}
 
 	func serve() {
+		print(endPoints.routes)
+		
 		try! channel.closeFuture.wait()
 		print("Stop!")
 	}
@@ -67,18 +69,15 @@ class Server<E: HTTPEnviroment> {
 }
 
 
-class ServerHandler<E: HTTPEnviroment> {
-
-}
-
 class EnviromentRouter<E: HTTPEnviroment> {
 
 	//	static var shared: EnviromentRouter = .init()
 
-	var tracker: [String] = []
+	var curRoute: String? = nil
 
 	func add(path: String, method: String) {
 		print("Registered path: \(path), \(method)")
+		curRoute = "\(method)|\(path)"
 	}
 
 	func add(type: String) {
@@ -92,6 +91,13 @@ class EnviromentRouter<E: HTTPEnviroment> {
 
 	func add(returns type: String, point: AnyPoint<E>) {
 		print("Return Type: \(type)")
+
+		if let route = curRoute {
+			routes[route] = point
+			curRoute = nil
+		} else {
+			fatalError()
+		}
 	}
 
 	var routes: [String: AnyPoint<E>] = [:]

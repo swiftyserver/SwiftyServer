@@ -10,7 +10,7 @@ import Foundation
 
 protocol HTTPEnviroment: RequestEnviroment {
 	var httpParameters: HTTPRequest { get }
-	static var server: Server<Self> { get }
+	static var Server: Server<Self> { get }
 	init(request: HTTPRequest)
 }
 
@@ -28,4 +28,10 @@ class HTTPRequest {
 	public private(set) var body: Data?
 	public private(set) var cookies: [String: String]
 	public private(set) var headers: [String: String]
+}
+
+extension HTTPEnviroment {
+	static func serve() {
+		Self.Server.serve()
+	}
 }

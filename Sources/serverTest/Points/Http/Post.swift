@@ -8,15 +8,25 @@
 import Foundation
 
 
+
 struct PostPoint<O: Decodable, R: HTTPEnviroment>: Point {
 	typealias Enviroment = R
 
 	func perform(on request: inout Enviroment) throws -> O {
-		return try JSONDecoder().decode(O.self, from: Data())
+
+		guard let data = request.httpParameters.body else {
+			throw PostError.noBodyFound
+		}
+
+		return try JSONDecoder().decode(O.self, from: data)
 	}
 
 	var upstream: Never {
 		fatalError()
+	}
+
+	enum PostError: Error {
+		case noBodyFound
 	}
 
 	typealias Output = O
@@ -24,8 +34,8 @@ struct PostPoint<O: Decodable, R: HTTPEnviroment>: Point {
 	var path: String
 
 	public init(path: String) {
-		R.server.endPoints.add(path: path, method: "POST")
-		R.server.endPoints.add(type: "\(O.Type.self)")
+		R.Server.endPoints.add(path: path, method: "POST")
+		R.Server.endPoints.add(type: "\(O.Type.self)")
 		self.path = path
 	}
 }

@@ -12,7 +12,7 @@ import NIOHTTP1
 print("Start!")
 
 struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
-	static var server: Server<MyEnviroment> = .init(host: "127.0.0.1")
+	static var Server: Server<MyEnviroment> = .init()
 
 	init(request: HTTPRequest) { self.httpParameters = request }
 
@@ -40,15 +40,19 @@ struct User: Identifiable {
 	var id: Int
 }
 
-MyEnviroment.server.configure {
+MyEnviroment.Server.configure {
 	MyEnviroment.get("/hello")
 		.map { up, req in "Hello" }
 		.map { up, req in "\(up) World"}
 		.response()
 
-//	MyEnviroment.get("/get/\(\.id)", type: GetPostByID.self)
-//		.getQuery()
-//		.response()
+	MyEnviroment.post("/hello", type: String.self)
+		.map { up, req in "Hello \(up)" }
+		.response()
+
+	//	MyEnviroment.get("/get/\(\.id)", type: GetPostByID.self)
+	//		.getQuery()
+	//		.response()
 
 	MyEnviroment.post("/update/", type: GetPostByID.self)
 		.auth()
@@ -70,5 +74,7 @@ MyEnviroment.server.configure {
 		.map { up, req in "Your post has been created!" }
 		.response()
 }
+
+MyEnviroment.serve()
 
 print("Configured!")

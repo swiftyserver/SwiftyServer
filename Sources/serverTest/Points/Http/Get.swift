@@ -21,7 +21,7 @@ struct GetPoint<R: HTTPEnviroment>: Point {
 	var path: String
 
 	public init(path: String) {
-		R.server.endPoints.add(path: path, method: "GET")
+		R.Server.endPoints.add(path: path, method: "GET")
 		self.path = path
 	}
 }
