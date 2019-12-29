@@ -7,11 +7,10 @@
 
 import Foundation
 
-protocol Point {
+public protocol Point {
 	associatedtype Upstream: Point = Never
 	associatedtype Output = Void
 	associatedtype Enviroment: RequestEnviroment
-
 
 	var upstream: Upstream { get }
 
@@ -24,11 +23,11 @@ extension Never: RequestEnviroment {
 }
 
 extension Never: Point {
-	typealias Enviroment = Never
+	public typealias Enviroment = Never
 
-	func perform(on request: inout Enviroment) { }
+	public func perform(on request: inout Enviroment) { }
 
-	var upstream: Never { fatalError() }
+	public var upstream: Never { fatalError() }
 }
 
 
