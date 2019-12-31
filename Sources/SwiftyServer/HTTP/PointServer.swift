@@ -145,7 +145,7 @@ class ServerHandler<E: HTTPEnviroment>: ChannelInboundHandler {
 
 
 					let request = HTTPRequest(path: self.requestHead!.uri, type: self.requestHead!.method.rawValue, body: body, cookies: [:], headers: [:])
-					var enviroment = E.init(request: request)
+					var enviroment = E.init(httpParameters: request)
 
 
 					do {

@@ -11,7 +11,7 @@ import Foundation
 public protocol HTTPEnviroment: RequestEnviroment {
 	var httpParameters: HTTPRequest { get }
 	static var Server: Server<Self> { get }
-	init(request: HTTPRequest)
+	init(httpParameters: HTTPRequest)
 }
 
 open class HTTPRequest {

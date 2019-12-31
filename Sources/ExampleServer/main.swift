@@ -11,14 +11,14 @@ import SwiftyServer
 struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 	static var Server: Server<MyEnviroment> = .init()
 
-	init(request: HTTPRequest) { self.httpParameters = request }
+	init(httpParameters request: HTTPRequest) { self.httpParameters = request }
 
 	static var AuthPath: KeyPath<MyEnviroment, String?> = \.httpParameters.cookies["auth"]
 	static var connection = MySQLDatabase(hostname: "127.0.0.1", database: "testDatabase")
 
 	var httpParameters: HTTPRequest
 
-	var currentUser: User?
+	var currentUser: User? = nil
 	
 	func auth(with: String) -> User { return User(id: 0) }
 }
@@ -53,7 +53,6 @@ MyEnviroment.Server.configure {
 
 	MyEnviroment.post("/update/", type: GetPostByID.self)
 		.auth()
-	
 		.assert(.unauthorized)  { _, req  in req.currentUser != nil }
 		.getQuery()
 		.check(message: "This is not your post") { post, req in post.writer == req.currentUser!.id }

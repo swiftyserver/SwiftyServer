@@ -8,6 +8,8 @@
 import Foundation
 import SwiftyServer
 
+
+
 struct SavePostQuery: SQLAction, Codable {
 	static var SQLString: SQLString<SavePostQuery> = "INSERT INTO posts(name, views) VALUES (\(\SavePostQuery.name), \(\SavePostQuery.views))"
 	
