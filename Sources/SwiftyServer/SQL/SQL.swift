@@ -40,7 +40,7 @@ extension SQLString: ExpressibleByStringInterpolation {
 		}
 
 		mutating public func appendInterpolation(_ keypath: PartialKeyPath<PType>) {
-			self.parts.append("$\(parameters.count+1)")
+			self.parts.append("?")
 			self.parameters.append(keypath)
 		}
 
@@ -70,6 +70,13 @@ public protocol SQLAction {
 public extension SQLAction {
 	var statement: SQLStatement {
 		return Self.SQLString.generateStatement(from: self)
+	}
+}
+
+
+public extension HTTPEnviroment where Self: DatabaseEnviroment {
+	static func simpleActionPost<A: SQLAction>(path: String, action: A.Type) -> SQLActionPoint<PostPoint<A, Self>> where A: Decodable  {
+		Self.post(path, type: A.self).query()
 	}
 }
 

@@ -16,8 +16,12 @@ public struct SQLActionPoint<In: Point>: Point where In.Output: SQLAction, In.En
 		let outPrev = try upstream.perform(on: &request)
 
 
+		try Enviroment.connection.perform(action: outPrev)
+		
 
 		print("Perform \(outPrev)")
+
+
 		return outPrev
 	}
 

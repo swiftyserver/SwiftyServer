@@ -8,6 +8,19 @@
 import Foundation
 import SwiftyServer
 
+import CryptoSwift
+
+//let password: Array<UInt8> = Array("s33krit".utf8)
+//let salt: Array<UInt8> = Array("nacllcan".utf8)
+//
+//let key = try! PKCS5.PBKDF2(password: password, salt: salt, iterations: 512, keyLength: 32, variant: .sha256).calculate()
+
+
+struct MyUser: Identifiable {
+	var id: Int
+}
+
+
 struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 	static var Server: Server<MyEnviroment> = .init()
 
@@ -18,11 +31,12 @@ struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 
 	var httpParameters: HTTPRequest
 
-	var currentUser: User? = nil
+	var currentUser: MyUser?
 	
-	func auth(with: String) -> User { return User(id: 0) }
+	func auth(with: String) -> MyUser { return User(id: 0) }
 }
 
+_ = MyEnviroment.connection
 
 extension MyEnviroment: ErrorHandlingEnviroment {
 	enum ErrorType: Error {
@@ -33,9 +47,6 @@ extension MyEnviroment: ErrorHandlingEnviroment {
 }
 
 
-struct User: Identifiable {
-	var id: Int
-}
 
 MyEnviroment.Server.configure {
 	MyEnviroment.get("/hello")
@@ -50,6 +61,10 @@ MyEnviroment.Server.configure {
 	//	MyEnviroment.get("/get/\(\.id)", type: GetPostByID.self)
 	//		.getQuery()
 	//		.response()
+
+	MyEnviroment.simpleActionPost(path: "/newUser", action: NewUser.self)
+		.constant("Success")
+		.response()
 
 	MyEnviroment.post("/update/", type: GetPostByID.self)
 		.auth()

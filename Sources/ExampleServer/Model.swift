@@ -28,6 +28,13 @@ struct SavePostRequest: Codable {
 	var name: String
 }
 
+struct NewUser: SQLAction, Codable {
+	static var SQLString: SQLString<NewUser> = "INSERT INTO users(username, password) VALUES (\(\NewUser.username), \(\NewUser.password))"
+
+	var username: String
+	var password: String
+}
+
 struct UpdatePostRequest: Codable {
 	var id: Int
 	var name: String
