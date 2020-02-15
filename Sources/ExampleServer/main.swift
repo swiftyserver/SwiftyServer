@@ -8,8 +8,10 @@
 import Foundation
 import SwiftyServer
 
-import CryptoSwift
+//import CryptoSwift
+import SwiftyMysql
 
+let a = SwiftyMysql()
 //let password: Array<UInt8> = Array("s33krit".utf8)
 //let salt: Array<UInt8> = Array("nacllcan".utf8)
 //
@@ -27,7 +29,7 @@ struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 	init(httpParameters request: HTTPRequest) { self.httpParameters = request }
 
 	static var AuthPath: KeyPath<MyEnviroment, String?> = \.httpParameters.cookies["auth"]
-	static var connection = MySQLDatabase(hostname: "127.0.0.1", database: "testDatabase")
+	static var connection = SwiftyMySQLDatabase(hostname: "127.0.0.1", database: "defaultdb")
 
 	var httpParameters: HTTPRequest
 
@@ -80,4 +82,14 @@ MyEnviroment.Server.configure {
 		.query()
 		.map { up, req in "Your post has been created!" }
 		.response()
+
+	struct Deneme: Codable {
+		var lol: String
+	}
+
+	MyEnviroment.post("/deneme", type: Deneme.self)
+		.sql("SELECT * FROM test WHERE a = \(\Deneme.lol)", output: String.self)
+		.constant("Deneme")
+		.response()
+
 }.serve()

@@ -10,18 +10,24 @@ let package = Package(
     ],
 	products: [
 		.executable(name: "ExampleServer", targets: ["ExampleServer"]),
-		.library(name: "SwiftyServer", targets: ["SwiftyServer"])
+		.library(name: "SwiftyServer", targets: ["SwiftyServer"]),
+		.library(name: "SwiftyMysql", targets: ["SwiftyMysql", "SwiftyServer"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-nio", from: "2.0.0"),
-		.package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
-		.package(url: "https://github.com/apple/swift-metrics.git", from: "1.0.0"),
 		.package(url: "https://github.com/krzyzanowskim/CryptoSwift", from: "1.0.0"),
-//		.package(url: "https://github.com/vapor/mysql-nio", .branch("master"))
-		.package(url: "https://github.com/IBM-Swift/SwiftKueryMySQL.git", from: "2.0.0")
 	],
 	targets: [
-		.target(name: "SwiftyServer", dependencies: ["NIO", "NIOHTTP1", "NIOConcurrencyHelpers", "SwiftKueryMySQL", "Logging", "Metrics"]),
-		.target(name: "ExampleServer", dependencies: ["SwiftyServer", "CryptoSwift"])
+		.target(name: "SwiftyServer", dependencies: ["NIO", "NIOHTTP1", "SwiftyMysql"]),
+		.target(name: "ExampleServer", dependencies: ["SwiftyServer", "CryptoSwift"]),
+		.target(name: "SwiftyMysql", dependencies: ["CMySQL"]),
+		.systemLibrary(
+            name: "CMySQL",
+            pkgConfig: "mysqlclient",
+            providers: [
+                .brew(["mysql"]),
+                .apt(["libmysqlclient-dev"]),
+            ]
+        )
 	]
 )

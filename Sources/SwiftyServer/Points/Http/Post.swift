@@ -26,6 +26,9 @@ public struct PostPoint<O: Decodable, R: HTTPEnviroment>: Point {
 	public var upstream: Never {
 		fatalError()
 	}
+	public func setup() {
+		
+	}
 
 	enum PostError: Error {
 		case noBodyFound

@@ -16,7 +16,7 @@ private func httpResponseHead(request: HTTPRequestHead, status: HTTPResponseStat
     let connectionHeaders: [String] = head.headers[canonicalForm: "connection"].map { $0.lowercased() }
 
 
-	print(#function + " returning headers for \(request) with status: \(status)")
+//	print(#function + " returning headers for \(request) with status: \(status)")
 
     if !connectionHeaders.contains("keep-alive") && !connectionHeaders.contains("close") {
         // the user hasn't pre-set either 'keep-alive' or 'close', so we might need to add headers
@@ -75,7 +75,7 @@ class ServerHandler<E: HTTPEnviroment>: ChannelInboundHandler {
 	private var keepAlive = false
 	private var state = State.idle {
 		didSet {
-			print("Setted state: \(state)")
+//			print("Setted state: \(state)")
 		}
 	}
 
@@ -117,21 +117,21 @@ class ServerHandler<E: HTTPEnviroment>: ChannelInboundHandler {
 
 		switch reqPart {
 		case .head(let request):
-			print("Head of \(request)")
+//			print("Head of \(request)")
 			self.requestHead = request
 			self.keepAlive = request.isKeepAlive
 			self.state.requestReceived()
 		case .body(buffer: var buf):
-			print("Body Data!")
+//			print("Body Data!")
 
 			self.buffer.writeBuffer(&buf)
 
 		case .end(_):
 
-			print("We need to get the \(requestHead!.method), \(requestHead!.uri)")
+//			print("We the \(requestHead!.method), \(requestHead!.uri)") need to get
 
 			if let point = self.getPointFor(path: requestHead!.uri, method: requestHead!.method.rawValue) {
-				print("Point Found!")
+//				print("Point Found!")
 
 				context.eventLoop.execute {
 
@@ -145,9 +145,8 @@ class ServerHandler<E: HTTPEnviroment>: ChannelInboundHandler {
 
 
 					let request = HTTPRequest(path: self.requestHead!.uri, type: self.requestHead!.method.rawValue, body: body, cookies: [:], headers: [:])
-					var enviroment = E.init(httpParameters: request)
-
-
+					let enviroment = E.init(httpParameters: request)
+					
 					do {
 						self.state.requestComplete()
 						try point.perform(start: enviroment) { finalData, enviroment in

@@ -51,6 +51,7 @@ public extension Point where Output == String, Enviroment: HTTPEnviroment {
 	func response() {
 		let p = Response(upstream: self).eraseToAnyType()
 		Enviroment.Server.endPoints.add(returns: "String", point: p)
+		self.setup()
 //		return p
 	}
 }
@@ -61,5 +62,6 @@ public extension Point where Output: Encodable, Enviroment: HTTPEnviroment {
 		let p = Encode(upstream: self).eraseToAnyType()
 		Enviroment.Server.endPoints.add(returns: "\(Output.self)", point: p)
 //		return p
+		self.setup()
 	}
 }

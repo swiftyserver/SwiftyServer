@@ -23,7 +23,7 @@ public class Server<E: HTTPEnviroment> {
 	}
 
 
-	public init(host: String = "127.0.0.1", port: Int = 9876) {
+	public init(host: String = "127.0.0.1", port: Int = 8082) {
 		threadPool.start()
 
 		let socketBootstrap = ServerBootstrap(group: group)
@@ -53,7 +53,8 @@ public class Server<E: HTTPEnviroment> {
 
 	public func serve() {
 		print(endPoints.routes)
-		
+//		print(channel.localAddress)
+
 		try! channel.closeFuture.wait()
 		print("Stop!")
 	}

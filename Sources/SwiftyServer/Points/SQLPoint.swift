@@ -6,7 +6,10 @@
 //
 
 import Foundation
+//import CNIOAtomics
 
+
+import SwiftyServer
 
 public struct SQLActionPoint<In: Point>: Point where In.Output: SQLAction, In.Enviroment: DatabaseEnviroment {
 	public typealias Enviroment = In.Enviroment
@@ -21,7 +24,9 @@ public struct SQLActionPoint<In: Point>: Point where In.Output: SQLAction, In.En
 	}
 
 	public func setup() {
-		print("Setup")
+		print("SQLAction \(In.Output.SQLString.sqlData)")
+		upstream.setup()
+		_ = Enviroment.connection
 	}
 
 	public typealias Output = In.Output
@@ -34,11 +39,17 @@ public struct SQLViewPoint<In: Point>: Point where In.Output: SQLView, In.Enviro
 
 	public func perform(start enviroment: In.Enviroment, next: (In.Output.Result, In.Enviroment) throws -> ()) throws {
 		try upstream.perform(start: enviroment) { (input, env) in
-
 			try next(JSONDecoder().decode(In.Output.Result.self, from: Data()), env)
-
 		}
 	}
+
+	public func setup() {
+		print("SQLView \(In.Output.SQLString.sqlData)")
+		upstream.setup()
+		_ = Enviroment.connection
+	}
+
+
 	public var upstream: In
 	public typealias Output = In.Output.Result
 }
@@ -52,6 +63,13 @@ public struct SQLArrayViewPoint<In: Point, O>: Point where In: SQLView, In.Resul
 			try next(JSONDecoder().decode([O].self, from: Data()), env)
 		}
 	}
+
+	public func setup() {
+		print("SQLArrayView \(In.SQLString.sqlData)")
+		upstream.setup()
+		_ = Enviroment.connection
+	}
+
 	public var upstream: In
 	public typealias Output = In.Result
 }

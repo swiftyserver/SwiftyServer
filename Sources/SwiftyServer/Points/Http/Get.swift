@@ -23,6 +23,10 @@ public struct GetPoint<R: HTTPEnviroment>: Point {
 		fatalError()
 	}
 
+	public func setup() {
+		
+	}
+
 	public var path: String
 
 	public init(path: String) {
