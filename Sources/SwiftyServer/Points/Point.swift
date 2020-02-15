@@ -14,18 +14,24 @@ public protocol Point {
 
 	var upstream: Upstream { get }
 
-	func perform(on enviroment: inout Enviroment) throws -> Output
+//	func perform(on enviroment: inout Enviroment) throws -> Output
+	func perform(start enviroment: Enviroment, next: (Output, Enviroment) throws -> ()) throws
+	func setup()
 }
 
-extension Never: RequestEnviroment {
 
-
+extension Point {
+	public func setup() {
+		upstream.setup()
+	}
 }
+
+extension Never: RequestEnviroment {  }
 
 extension Never: Point {
 	public typealias Enviroment = Never
 
-	public func perform(on request: inout Enviroment) { }
+	public func perform(start: Never, next: ((), Never) throws -> ()) throws { }
 
 	public var upstream: Never { fatalError() }
 }

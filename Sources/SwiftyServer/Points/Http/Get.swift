@@ -8,6 +8,11 @@
 import Foundation
 
 public struct GetPoint<R: HTTPEnviroment>: Point {
+	public func perform(start enviroment: R, next: ((), R) throws -> ()) throws {
+		try next((), enviroment)
+	}
+
+
 	public typealias Enviroment = R
 
 	public func perform(on request: inout Enviroment) -> () {
@@ -28,6 +33,12 @@ public struct GetPoint<R: HTTPEnviroment>: Point {
 
 public struct DynamicGetPoint<P: Decodable, R: HTTPEnviroment>: Point {
 	public typealias Enviroment = R
+
+	public func perform(start enviroment: R, next: (P, R) throws -> ()) throws {
+		try next(try JSONDecoder().decode(P.self, from: Data()), enviroment)
+	}
+
+
 	public func perform(on request: inout Enviroment) throws  -> P {
 		return try JSONDecoder().decode(P.self, from: Data())
 	}

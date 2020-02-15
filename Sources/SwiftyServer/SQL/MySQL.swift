@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import NIOTLS
-import NIOSSL
 import SwiftKueryMySQL
 import SwiftKuery
 
@@ -22,57 +20,32 @@ import SwiftKuery
 //}
 
 public struct SwiftyMySQLDatabase: DatabaseConnection {
+	public func perform<T>(action: T, callback: () throws -> ()) throws where T : SQLAction {
+		let statement = T.SQLString.generateStatement(from: action)
+
+
+	}
+
+	public func get<T>(view: T, callback: (T.Result) throws -> ()) throws where T : SQLView {
+//		let statement = T.SQLString.generateStatement(from: action)
+
+
+	}
+
+	public func get<T, E>(all: T, callback: (T.Result) throws -> ()) throws where T : SQLView, E : Decodable, T.Result == Array<E> {
+//		let statement = T.SQLString.generateStatement(from: action)
+
+
+		
+	}
+
+	public func perform<T, O>(action: T, output: O.Type) throws where T : SQLAction, O : Decodable {
+		
+	}
+
 
 	enum ConError: Error {
 		case requestError
-	}
-
-	public func perform<T>(action: T) throws where T : SQLAction {
-
-
-		print("MYSQL Action requested!")
-
-		let statement = T.SQLString.generateStatement(from: action)
-		print("Generated statement: ", statement)
-
-
-		let sem = DispatchSemaphore(value: 0)
-
-		var deneme = false
-		var error: Error?
-
-		self.connection.execute(statement.sql, parameters: statement.values) { (result) in
-			print("Result \(result)")
-			deneme = result.asError == nil
-			error = result.asError
-			sem.signal()
-		}
-
-		sem.wait()
-
-
-		print("Waited!")
-
-		if let err = error {
-			print("MyError: \(err)")
-			throw err
-		}
-		if !deneme {
-
-			throw ConError.requestError
-		}
-
-//Insert(into: infos, values: "firstname", "surname", Parameter())
-		
-//		return deneme
-	}
-
-	public func get<T>(view: T) throws where T : SQLView {
-
-	}
-
-	public func get<T, E>(all: T) throws where T : SQLView, E : Decodable, T.Result == Array<E> {
-
 	}
 
 
@@ -94,6 +67,7 @@ public struct SwiftyMySQLDatabase: DatabaseConnection {
 		self.hostname = hostname
 		self.database = database
 
+		self.connection = MySQLConnection(host: self.hostname, user: "doadmin", password: "gqzdtaw8zp69lgbj", database: "defaultdb", port: 25060, characterSet: "utf8", reconnect: true)
 		
 //		self.connection = MySQLConnection(host: self.hostname, user: "", password: "", database: "", port: 25060, characterSet: "utf8", reconnect: true)
 
@@ -101,8 +75,7 @@ public struct SwiftyMySQLDatabase: DatabaseConnection {
 
 		print("Connecting to mysql \(hostname)!")
 
-		self.connection.connect { [self] res in
-
+		self.connection.connect { res in
 			print("MYSQL Result!")
 			print(res)
 		}

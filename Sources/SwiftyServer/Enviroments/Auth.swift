@@ -26,12 +26,16 @@ public protocol AuthEnviroment: DatabaseEnviroment {
 public struct AuthPoint<In: Point>: Point where In.Enviroment: AuthEnviroment {
 	public typealias Enviroment = In.Enviroment
 
-	public func perform(on request: inout Enviroment) throws -> In.Output {
-		let outPrev = try upstream.perform(on: &request)
-		if let credentials = request[keyPath: self.keyPath] {
-			request.currentUser = request.auth(with: credentials)
-		}
-		return outPrev
+	public func perform(start enviroment: Enviroment, next: (In.Output, In.Enviroment) throws -> ()) throws {
+		try upstream.perform(start: enviroment, next: { (input, env) in
+			var newEnv = env
+
+			if let credentials = env[keyPath: self.keyPath] {
+				newEnv.currentUser = newEnv.auth(with: credentials)
+			}
+			try next(input, newEnv)
+
+		})
 	}
 
 	public var upstream: In

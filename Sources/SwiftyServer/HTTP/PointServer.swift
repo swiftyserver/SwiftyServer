@@ -150,17 +150,19 @@ class ServerHandler<E: HTTPEnviroment>: ChannelInboundHandler {
 
 					do {
 						self.state.requestComplete()
-						let outData = try point.perform(on: &enviroment)
+						try point.perform(start: enviroment) { finalData, enviroment in
 
-						print("Out! \(outData)")
-						self.buffer.clear()
-						self.buffer.writeBytes(outData)
+							self.buffer.clear()
+							self.buffer.writeBytes(finalData)
 
-						var headers = HTTPHeaders()
-						headers.add(name: "Content-Length", value: "\(self.buffer.readableBytes)")
-						context.write(self.wrapOutboundOut(.head(httpResponseHead(request: self.requestHead!, status: .ok, headers: headers))), promise: nil)
-						context.write(self.wrapOutboundOut(.body(.byteBuffer(self.buffer))), promise: nil)
-						self.completeResponse(context, trailers: nil, promise: nil)
+							var headers = HTTPHeaders()
+							headers.add(name: "Content-Length", value: "\(self.buffer.readableBytes)")
+							context.write(self.wrapOutboundOut(.head(httpResponseHead(request: self.requestHead!, status: .ok, headers: headers))), promise: nil)
+							context.write(self.wrapOutboundOut(.body(.byteBuffer(self.buffer))), promise: nil)
+							self.completeResponse(context, trailers: nil, promise: nil)
+						}
+
+
 					} catch {
 
 						print("Got error!", error)

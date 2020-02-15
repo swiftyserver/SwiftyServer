@@ -12,13 +12,13 @@ public struct Check<In: Point>: Point {
 
 	public typealias Enviroment = In.Enviroment
 
-	public func perform(on request: inout Enviroment) throws -> In.Output {
-		let outPrev = try upstream.perform(on: &request)
-
-		if self.check(outPrev, request) {
-			return outPrev
-		} else {
-			throw ValidationError.notValid(message: self.message)
+	public func perform(start enviroment: Enviroment, next: (In.Output, In.Enviroment) throws -> ()) throws {
+		try upstream.perform(start: enviroment) { input, env in
+			if self.check(input, env) {
+				try next(input, env)
+			} else {
+				throw ValidationError.notValid(message: self.message)
+			}
 		}
 	}
 

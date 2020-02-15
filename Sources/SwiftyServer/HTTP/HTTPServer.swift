@@ -23,7 +23,7 @@ public class Server<E: HTTPEnviroment> {
 	}
 
 
-	public init(host: String = "0.0.0.0", port: Int = 8080) {
+	public init(host: String = "127.0.0.1", port: Int = 9876) {
 		threadPool.start()
 
 		let socketBootstrap = ServerBootstrap(group: group)

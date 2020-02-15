@@ -8,13 +8,13 @@
 import Foundation
 
 public struct Maped<Upstream: Point, Out>: Point {
-	public typealias Enviroment = Upstream.Enviroment
-
-	public func perform(on request: inout Enviroment) throws -> Out {
-		let outPrev = try upstream.perform(on: &request)
-
-		return f(outPrev, request)
+	public func perform(start enviroment: Enviroment, next: (Out, Upstream.Enviroment) throws -> ()) throws {
+		try upstream.perform(start: enviroment, next: { (prevOut, prevEnviroment) in
+			try next(f(prevOut, prevEnviroment), prevEnviroment)
+		})
 	}
+
+	public typealias Enviroment = Upstream.Enviroment
 
 	public var upstream: Upstream
 	var f: (Upstream.Output, Enviroment) -> Out

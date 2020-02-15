@@ -36,8 +36,6 @@ struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 	func auth(with: String) -> MyUser { return User(id: 0) }
 }
 
-_ = MyEnviroment.connection
-
 extension MyEnviroment: ErrorHandlingEnviroment {
 	enum ErrorType: Error {
 		case unauthorized
@@ -45,8 +43,6 @@ extension MyEnviroment: ErrorHandlingEnviroment {
 		case postNotFound
 	}
 }
-
-
 
 MyEnviroment.Server.configure {
 	MyEnviroment.get("/hello")
@@ -66,7 +62,7 @@ MyEnviroment.Server.configure {
 		.constant("Success")
 		.response()
 
-	MyEnviroment.post("/update/", type: GetPostByID.self)
+	MyEnviroment.post("/update", type: GetPostByID.self)
 		.auth()
 		.assert(.unauthorized)  { _, req  in req.currentUser != nil }
 		.getQuery()

@@ -7,18 +7,20 @@
 
 import Foundation
 
-
+extension Encodable {
+	func validate() -> Bool {
+		return true
+	}
+}
 
 public struct PostPoint<O: Decodable, R: HTTPEnviroment>: Point {
 	public typealias Enviroment = R
 
-	public func perform(on request: inout Enviroment) throws -> O {
-
-		guard let data = request.httpParameters.body else {
+	public func perform(start enviroment: R, next: (O, R) throws -> ()) throws {
+		guard let data = enviroment.httpParameters.body else {
 			throw PostError.noBodyFound
 		}
-
-		return try JSONDecoder().decode(O.self, from: data)
+		try next(try JSONDecoder().decode(O.self, from: data), enviroment)
 	}
 
 	public var upstream: Never {
@@ -44,12 +46,17 @@ public struct PostPoint<O: Decodable, R: HTTPEnviroment>: Point {
 
 public struct RePostPoint<In: Point, O: Decodable>: Point where In.Enviroment: HTTPEnviroment {
 	public typealias Enviroment = In.Enviroment
+	public func perform(start enviroment: In.Enviroment, next: (O, In.Enviroment) throws -> ()) throws {
+		try upstream.perform(start: enviroment) { (_, env) in
+			guard let data = enviroment.httpParameters.body else {
+				throw PostError.noBodyFound
+			}
+			try next(try JSONDecoder().decode(O.self, from: data), env)
+		}
+	}
 
-	public func perform(on request: inout Enviroment) throws -> O {
-
-		_ = try upstream.perform(on: &request)
-
-		return try JSONDecoder().decode(O.self, from: request.httpParameters.body ?? Data())
+	enum PostError: Error {
+		case noBodyFound
 	}
 
 	public var upstream: In

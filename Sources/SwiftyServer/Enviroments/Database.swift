@@ -7,24 +7,16 @@
 
 import Foundation
 
-
 public protocol DatabaseConnection {
 	// General Database Connection Stuff!
-
 	var isAvailable: Bool { get }
 
-	func perform<T>(action: T) throws where T : SQLAction
-
-	func get<T>(view: T) throws where T : SQLView
-
-	func get<T: SQLView, E>(all: T) throws where T.Result == Array<E>
-
-
+	func perform<T: SQLAction>(action: T, callback: () throws -> ()) throws
+	func get<T: SQLView>(view: T, callback: (T.Result) throws -> ()) throws
+	func get<T: SQLView, E>(all: T, callback: (T.Result) throws -> ()) throws where T.Result == Array<E>
 }
-
 
 public protocol DatabaseEnviroment: RequestEnviroment {
 	associatedtype Database: DatabaseConnection
-
 	static var connection: Database { get }
 }

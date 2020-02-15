@@ -11,10 +11,10 @@ import Foundation
 public struct Constant<In: Point, Out>: Point {
 	public typealias Enviroment = In.Enviroment
 
-	public func perform(on request: inout Enviroment) throws -> Out {
-		_ = try upstream.perform(on: &request)
-
-		return self.value
+	public func perform(start enviroment: In.Enviroment, next: (Out, In.Enviroment) throws -> ()) throws {
+		try upstream.perform(start: enviroment) { (_, env) in
+			try next(value, env)
+		}
 	}
 
 

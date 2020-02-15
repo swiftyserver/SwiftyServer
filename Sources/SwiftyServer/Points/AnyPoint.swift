@@ -9,6 +9,12 @@ import Foundation
 
 
 public struct AnyPoint<R: RequestEnviroment>: Point {
+	public func perform(start enviroment: R, next: (Data, Enviroment) throws -> ()) throws {
+		try fpoint(enviroment, { input, env in
+			try next(input, env)
+		})
+	}
+
 	public typealias Enviroment = R
 
 	public var upstream: Never {
@@ -17,15 +23,12 @@ public struct AnyPoint<R: RequestEnviroment>: Point {
 
 	public typealias Output = Data
 
-	var fpoint: (inout Enviroment) throws -> Data
+	var fpoint: (Enviroment, (Data, Enviroment) throws -> ()) throws -> ()
 
 
-	public func perform(on request: inout Enviroment) throws -> Data {
-		return try fpoint(&request)
-	}
 
 	init<P: Point>(erase point: P) where P.Enviroment == Enviroment, P.Output == Data {
-		self.fpoint = point.perform
+		self.fpoint = point.perform(start:next:)
 	}
 }
 
