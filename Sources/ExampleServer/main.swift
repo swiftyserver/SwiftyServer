@@ -27,7 +27,7 @@ struct MyEnviroment: AutoAuthEnviroment, DatabaseEnviroment, HTTPEnviroment {
 	init(httpParameters request: HTTPRequest) { self.httpParameters = request }
 
 	static var AuthPath: KeyPath<MyEnviroment, String?> = \.httpParameters.cookies["auth"]
-	static var connection = MySQLDatabase(hostname: "127.0.0.1", database: "testDatabase")
+	static var connection = SwiftyMySQLDatabase(hostname: "127.0.0.1", database: "testDatabase")
 
 	var httpParameters: HTTPRequest
 
